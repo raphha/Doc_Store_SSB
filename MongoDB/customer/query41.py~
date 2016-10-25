@@ -1,0 +1,24 @@
+from pymongo import MongoClient
+import time
+
+def Inicio():
+
+	client = MongoClient()
+
+	db = client['teste']
+
+	start = time.time()
+
+	cursor = db.testando.aggregate([{"$match":{"$and":[{"c_region":"AMERICA"},{'lineorders.supplier.s_region': "AMERICA"},{"$or":[{'lineorders.part.p_mfgr':"MFGR#1"},{'lineorders.part.p_mfgr':"MFGR#2"}]}]}},{"$unwind":'$lineorders'},{"$match":{"$and":[{"c_region":"AMERICA"},{'lineorders.supplier.s_region':"AMERICA"},{"$or":[{'lineorders.part.p_mfgr':"MFGR#1"},{'lineorders.part.p_mfgr':"MFGR#2"}]}]}},{"$project":{'lineorders.orderdate.d_year':1,"c_nation":1,"dim":{"$subtract":["$lineorders.lo_revenue","$lineorders.lo_supplycost"]}}},{"$group":{"_id":{"1d_year":'$lineorders.orderdate.d_year',"2c_nation":'$c_nation'}, "profit":{"$sum": "$dim"}}},{"$sort":{"_id.1d_year":1, "_id.2c_nation":1}}]) #{"$sort":{'_id':1,'_id.c_nation':1}}])
+
+
+	for document in cursor:
+		print(document)
+
+	end = time.time()
+
+	print('tempo:'+ str(end - start))
+
+Inicio()
+
+#para funcionar no pymongo todos os campos tem que estar em string

@@ -1,0 +1,5 @@
+#!/bin/bash
+mongoimport --db part --collection part --file "home/raphael/Documents/data/part/part1.json" --jsonArray
+mongoimport --db part --collection part --file "home/raphael/Documents/data/part/part201.json" --jsonArray
+mongoimport --db part --collection part --file "home/raphael/Documents/data/part/part401.json" --jsonArray
+mongoimport --db part --collection part --file "home/raphael/Documents/data/part/part601.json" --jsonArray

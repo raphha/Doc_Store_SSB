@@ -1,0 +1,24 @@
+from pymongo import MongoClient
+import time
+
+def Inicio():
+
+	client = MongoClient()
+
+	db = client['part']
+
+	start = time.time()
+
+	cursor = db.part.aggregate([{"$match":{"$and":[{'lineorder.orderdate.d_yearmonthnum':"199712"},{"$or":[{"lineorder.customer.c_city":"UNITED KI1"},{"lineorder.customer.c_city":"UNITED KI5"}]},{"$or":[{'lineorder.supplier.s_city':"UNITED KI1"},{'lineorder.supplier.s_city':"UNITED KI5"}]}]}},{"$unwind":'$lineorder'},{"$match":{"$and":[{'lineorder.orderdate.d_yearmonthnum':"199712"},{"$or":[{"lineorder.customer.c_city":"UNITED KI1"},{"lineorder.customer.c_city":"UNITED KI5"}]},{"$or":[{'lineorder.supplier.s_city':"UNITED KI1"},{'lineorder.supplier.s_city':"UNITED KI5"}]}]}},{"$project":{"lineorder.customer.c_city":1,'lineorder.supplier.s_city':1,'lineorder.orderdate.d_year':1,'lineorder.lo_revenue':1}},{"$group":{"_id":{"c_city":'$lineorder.customer.c_city', "s_city":'$lineorder.supplier.s_city',"d_year": '$lineorder.orderdate.d_year'}, "revenue":{"$sum": '$lineorder.lo_revenue'}}},{"$sort":{'_id':1,'_id.d_year':1}}]) #{"$sort":{'_id':1,'_id.c_nation':1}}])
+
+
+	for document in cursor:
+		print(document)
+
+	end = time.time()
+
+	print('tempo:'+ str(end - start))
+
+Inicio()
+
+#para funcionar no pymongo todos os campos tem que estar em string

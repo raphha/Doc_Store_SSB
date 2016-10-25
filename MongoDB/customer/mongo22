@@ -1,0 +1,3 @@
+#!/bin/bash
+mongo localhost:27017/customer_ssb --eval 'db.customer.aggregate([{"$match":{"$and":[{"lineorder.part.p_brand1":{"$gte":"MFGR#2221"}},{"lineorder.part.p_brand1":{"$lte":"MFGR#2228"}},{"lineorder.supplier.s_region":"ASIA"}]}},{"$unwind":"$lineorder"},{"$match":{"$and":[{"lineorder.part.p_brand1":{"$gte":"MFGR#2221"}},{"lineorder.part.p_brand1":{"$lte":"MFGR#2228"}},{"lineorder.supplier.s_region":"ASIA"}]}},{"$project":{"lineorder.orderdate.d_year":1,"lineorder.part.p_brand1":1,"lineorder.lo_revenue":1}},{"$group":{"_id":{"d_year": "$lineorder.orderdate.d_year","p_brand1": "$lineorder.part.p_brand1"}, "revenue":{"$sum": "$lineorder.lo_revenue"}}}]).toArray()' >>~/Documentos/benchmark/mongoDB/customermo/query/shell/resultados/query22.txt
+

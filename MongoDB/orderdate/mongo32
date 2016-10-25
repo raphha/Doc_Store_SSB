@@ -1,0 +1,3 @@
+#!/bin/bash
+mongo localhost:27017/orderdate --eval 'db.orderdate.aggregate([{$match:{$and:[{d_year:{$gte:1992}},{d_year:{$lte:1997}},{"lineorder.supplier.s_nation":"UNITED STATES"},{"lineorder.customer.c_nation":"UNITED STATES"}]}},{$unwind:"$lineorder"},{$match:{$and:[{d_year:{$gte:1992}},{d_year:{$lte:1997}},{"lineorder.supplier.s_nation":"UNITED STATES"},{"lineorder.customer.c_nation":"UNITED STATES"}]}},{$project:{"lineorder.customer.c_city":1,"lineorder.supplier.s_city":1,d_year:1,"lineorder.lo_revenue":1}},{$group:{_id:{c_city:"$lineorder.customer.c_city", s_city:"$lineorder.supplier.s_city",d_year: "$d_year"}, revenue:{$sum: "$lineorder.lo_revenue"}}}]).toArray()' >>~/Documentos/benchmark/mongoDB/orderdatemo/query/shell/resultados/query32.txt
+

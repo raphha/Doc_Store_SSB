@@ -1,0 +1,3 @@
+#!/bin/bash
+mongo localhost:27017/lineorder --eval 'db.lineorder.aggregate([{$match:{$and:[{"orderdate.d_year":{$gte:1992}},{"orderdate.d_year":{$lte:1997}},{"supplier.s_region":"ASIA"},{"customer.c_region":"ASIA"}]}},{$project:{"customer.c_nation":1,"supplier.s_nation":1,"orderdate.d_year":1, lo_revenue:1}},{$group:{_id:{c_nation:"$customer.c_nation", s_nation:"$supplier.s_nation",d_year: "$orderdate.d_year"}, revenue:{$sum: "$lo_revenue"}}}]).toArray()' >>~/Documentos/benchmark/mongoDB/lineordermo/query/shell/resultados/query31.txt
+

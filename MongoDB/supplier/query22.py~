@@ -1,0 +1,23 @@
+from pymongo import MongoClient
+import time
+
+def Inicio():
+
+	client = MongoClient()
+
+	db = client['teste']
+
+	start = time.time()
+
+	cursor = db.testando.aggregate([{"$match":{"$and":[{'lineorders.part.p_brand1':{"$gte":"MFGR#2221"}},{'lineorders.part.p_brand1':{"$lte":"MFGR#2228"}},{'lineorders.supplier.s_region':"ASIA"}]}},{"$unwind":'$lineorders'},{"$match":{"$and":[{'lineorders.part.p_brand1':{"$gte":"MFGR#2221"}},{'lineorders.part.p_brand1':{"$lte":"MFGR#2228"}},{'lineorders.supplier.s_region':"ASIA"}]}},{"$project":{'lineorders.orderdate.d_year':1,'lineorders.part.p_brand1':1,'lineorders.lo_revenue':1}},{"$group":{"_id":{"d_year": '$lineorders.orderdate.d_year',"p_brand1": '$lineorders.part.p_brand1'}, "revenue":{"$sum": '$lineorders.lo_revenue'}}},{"$sort":{ '_id':1}}])
+
+	for document in cursor:
+		print(document)
+
+	end = time.time()
+
+	print('tempo:'+ str(end - start))
+
+Inicio()
+
+#para funcionar no pymongo todos os campos tem que estar em string

@@ -1,0 +1,3 @@
+#!/bin/bash
+mongo localhost:27017/supplier --eval 'db.supplier.aggregate([{$match:{$and:[{"lineorder.orderdate.d_year": 1993},{"lineorder.lo_discount":{$in:[1,2,3]}},{"lineorder.lo_quantity":{$lt:25}}]}},{$unwind: "$lineorder"},{$match:{$and:[{"lineorder.orderdate.d_year": 1993},{"lineorder.lo_discount":{$in:[1,2,3]}},{"lineorder.lo_quantity":{$lt:25}}]}},{$project:{"lineorder.orderdate.d_datekey":1, des:{$multiply:["$lineorder.lo_extendedprice","$lineorder.lo_discount",0.01]}}},{$group:{_id:null, revenue:{$sum:"$des"}}}]).toArray()' >>~/Documentos/benchmark/mongoDB/suppliermo/query/shell/resultados/query11.txt
+
