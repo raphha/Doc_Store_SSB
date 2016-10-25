@@ -9,7 +9,7 @@ Thought its generator it's possible to generate numerous data sizes.
 
 After the generation, it's possible to insert the SSB data to a relational database as POSTGRESQL and convert the data to JSON format using each table as a root of the JSON document.
 
-One sample of query to genarate the aggregate modeling based on the Customer table can be seen on POSTGRESQL query.
+One sample of query to generate the aggregate modeling based on the Customer table can be seen on POSTGRESQL query.
 
 We recomend the use of indexes to faster JSON genaration.
 
@@ -17,4 +17,4 @@ After the generation of the JSON it's possible to insert it on Document Store Da
 
 On this project the query sintax of 5 DBMS is presented: MongoDB, ElasticSearch, OrientDB, CouchDB and MarkLogic.
 
-Each DBMS folder has 5 sub-folder with queries on different aggregate modelings.
+Each DBMS folder has 5 sub-folder with queries on different aggregate modelings, for example the sub-folder customer inside the folder MongoDB represents the SSB queries on aggregate modeling based on Customer table.
