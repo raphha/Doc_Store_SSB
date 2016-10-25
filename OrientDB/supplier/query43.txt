@@ -1,0 +1,5 @@
+gc;connect remote:127.0.0.1/supplier root rasns1901;select first(line.part.p_brand1) as p_brand1, s_city as s_city, first(line.orderdate.d_year) as year, sum(eval("line.lo_revenue.asLong() - line.lo_supplycost.asLong()")) as revenue from (select s_city, lineorder as line from supplier where s_nation="UNITED STATES" and lineorder.part contains(p_category="MFGR#14") and lineorder.customer contains(c_region="AMERICA") and lineorder.orderdate contains(d_year=1997 or d_year=1998) unwind line) where line.customer contains(c_region="AMERICA") and line.part contains(p_category="MFGR#14") and line.orderdate contains(d_year=1997 or d_year=1998) group by  line.part.p_brand1, s_city, line.orderdate.d_year
+
+
+
+

@@ -1,0 +1,1 @@
+connect remote:127.0.0.1/supplier root rasns1901;select first(customer.c_nation), supplied.s_nation, first(orderdate.d_year), sum(lo_revenue.asLong()) as revenue from lineorder where customer contains(c_region="ASIA") and orderdate contains(d_year between 1992 and 1997) and supplied.s_region="ASIA" group by customer.c_nation, supplied.s_nation, orderdate.d_year

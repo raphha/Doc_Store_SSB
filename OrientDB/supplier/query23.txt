@@ -1,0 +1,1 @@
+gc;connect remote:127.0.0.1/supplier root rasns1901;select sum(line.lo_revenue.asLong()), first(line.orderdate.d_year), first(line.part.p_brand1) from (select lineorder as line from supplier where s_region="EUROPE" and lineorder.part contains(p_brand1 = "MFGR#2221") unwind line) where line.part contains(p_brand1 = "MFGR#2221") group by line.orderdate.d_year, line.part.p_brand1
