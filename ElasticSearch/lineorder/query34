@@ -1,0 +1,40 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_lineorder/lineorder/_search?pretty' -d '
+{
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+				 {"bool":{"should":[{"term": {"supplier.s_city":"UNITED KI1"}},{"term": {"supplier.s_city":"UNITED KI5"}}]}},
+                   {"bool":{"should":[{"term": {"customer.c_city":"UNITED KI1"}},{"term": {"customer.c_city":"UNITED KI5"}}]}},	                  
+		  {"term": {"orderdate.d_yearmonthnum":199712}}     
+                 ]
+                }
+			   },
+          "aggs": {
+   		 "year": {
+     		 "terms": {
+      		  "field": "orderdate.d_year",
+            "order" : { "_term" : "asc" }
+     		  }, 
+		  "aggs": {
+   		 "c_city": {
+     		 "terms": {
+      		  "field": "customer.c_city",
+            "order" : { "_term" : "asc" }			  
+     		  },
+			  "aggs": {
+   		 "s_city": {
+     		 "terms": {
+      		  "field": "supplier.s_city",
+            "order" : { "sum_revenue" : "desc" }
+     		  },
+			"aggs": {
+    			"sum_revenue": {
+    			  "sum": {
+     		        "field": "lo_revenue"
+                }
+			}}}}}}}}}
+},"size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/lineorder/resultados/query34.txt

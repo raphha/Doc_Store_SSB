@@ -1,0 +1,23 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_lineorder/lineorder/_search?pretty' -d '
+{
+      "aggs": {
+	  "lineorder": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                  {"term": {"orderdate.d_weeknuminyear":6}},
+		  {"term": {"orderdate.d_year":1994}},
+                  {"range" : {"lo_discount":{"gte":5, "lte":7}}},
+		  {"range" : {"lo_quantity":{"gte":26, "lte":35}}} 
+                ]
+               }
+			   },
+          "aggs": {
+            "extended_price": {
+              "sum": {"script":"doc[\"lo_extendedprice\"].value * doc[\"lo_discount\"].value * 0.01"}
+            }
+		}
+  }
+}, "size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/lineorder/resultados/query13.txt

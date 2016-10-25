@@ -1,0 +1,65 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_supplier/supplier/_search?pretty' -d '
+{
+  "query": {"filtered": {"filter": {
+  "bool": {
+	      "must": [
+        {"bool":{"should":[{"term": {"s_city":"MUNITED KI1"}},{"term": {"s_city":"UNITED KI5"}}]}},
+		{
+    "filtered": {
+      "filter": {
+        "nested": {
+          "inner_hits": {},
+          "path": "lineorder",
+          "query": {
+            "filtered": {
+              "filter": {
+                "bool": {
+                "must": [ 
+               		{"bool":{"should":[{"term": {"lineorder.customer.c_city":"UNITED KI1"}},{"term": {"lineorder.customer.c_city":"UNITED KI5"}}]}},	 
+		  {"range": {"lineorder.orderdate.d_year":{"gte":1992,"lte":1997}}}  
+                ]
+         }}}}}}}
+}]}}}},
+  "aggs": {
+   		 "s_city": {
+     		 "terms": {
+      		  "field": "s_city",
+            "order" : { "_term" : "asc" }, "size": 10000
+     		  },
+  "aggs": {
+    "lineorder": {
+      "nested": {
+        "path": "lineorder"
+      },
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                   {"bool":{"should":[{"term": {"lineorder.customer.c_city":"UNITED KI1"}},{"term": {"lineorder.customer.c_city":"UNITED KI5"}}]}},	 
+		  {"range": {"lineorder.orderdate.d_year":{"gte":1992,"lte":1997}}} 
+                 ]
+                }
+			   },
+          "aggs": {
+   		 "year": {
+     		 "terms": {
+      		  "field": "lineorder.orderdate.d_year",
+            "order" : { "_term" : "asc" }, "size": 10000
+     		  }, 
+		  "aggs": {
+   		 "c_city": {
+     		 "terms": {
+      		  "field": "lineorder.customer.c_city",
+            "order" : { "_term" : "asc" }, "size": 10000			  
+     		  },
+			"aggs": {
+    			"sum_revenue": {
+    			  "sum": {
+     		        "field": "lineorder.lo_revenue"
+                }
+			}}}}}}}}}}}
+
+},"sort" : [{"lineorder.lo_revenue" : {"order" : "desc"}}],"size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/supplier/resultados/query33.txt

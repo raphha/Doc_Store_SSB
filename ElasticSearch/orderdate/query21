@@ -1,0 +1,66 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_orderdate/orderdate/_search?pretty' -d '
+{
+  "query": {
+    "filtered": {
+      "filter": {
+        "nested": {
+          "inner_hits": {},
+          "path": "lineorder",
+          "query": {
+            "filtered": {
+              "filter": {
+                "bool": {
+                "must": [ 
+                  { "term": { "lineorder.part.p_category":"MFGR#12"}}, 
+                  {"term": {"lineorder.supplier.s_region":"AMERICA"}}  
+                ]
+               }
+              }
+            }
+          }
+        }
+      }
+    }
+},
+"aggs": {
+   		 "group_by_year": {
+     		 "terms": {
+      		  "field": "d_year",
+            "order" : { "_term" : "asc" }, "size": 10000
+     		  },
+  "aggs": {
+    "lineorder": {
+      "nested": {
+        "path": "lineorder"
+      },
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                  { "term": { "lineorder.part.p_category":"MFGR#12"}}, 
+                  {"term": {"lineorder.supplier.s_region":"AMERICA"}} 
+                ]
+               }
+			   },
+          "aggs": {
+   		 	"group_by_brand": {
+     		 	"terms": {
+      		 	 "field": "lineorder.part.p_brand1",
+            "order" : { "_term" : "asc" }, "size": 10000
+      		         },
+			"aggs": {
+    			"sum_revenue": {
+    			  "sum": {
+     		        "field": "lineorder.lo_revenue"
+      }}}
+      }
+    }
+  }
+  }
+        }
+		}
+  }
+}, "size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/orderdate/resultados/query21.txt 

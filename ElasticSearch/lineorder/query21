@@ -1,0 +1,39 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_lineorder/lineorder/_search?pretty' -d '
+{
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                {"term": {"supplier.s_region":"AMERICA"}}, 
+                  { "term": { "part.p_category":"MFGR#12"}}  
+                ]
+               }
+			   },
+          "aggs": {
+   		 "group_by_year": {
+     		 "terms": {
+      		  "field": "orderdate.d_year",
+            "order" : { "_term" : "asc" }, "size": 10000
+     		  },
+          "aggs": {
+   		 	"group_by_brand": {
+     		 	"terms": {
+      		 	 "field": "part.p_brand1",
+            "order" : { "_term" : "asc" }, "size": 10000
+      		         },
+			"aggs": {
+    			"sum_revenue": {
+    			  "sum": {
+     		        "field": "lo_revenue"
+      }
+      }
+    }
+  }
+  }
+        }
+		}
+  }
+}, "size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/lineorder/resultados/query21.txt

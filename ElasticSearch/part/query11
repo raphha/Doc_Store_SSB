@@ -1,0 +1,52 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_part/part2/_search?pretty' -d '
+{
+  "query": {
+    "filtered": {
+      "filter": {
+        "nested": {
+          "inner_hits": {},
+          "path": "lineorder",
+          "query": {
+            "filtered": {
+              "filter": {
+                "bool": {
+                "must": [ 
+                  {"term": {"lineorder.orderdate.d_year":1993}},
+                  {"range" : {"lineorder.lo_discount":{"gte":1, "lte":3}}},
+			{"range" : {"lineorder.lo_quantity":{"lt":25}}} 
+                ]
+               }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "lineorder": {
+      "nested": {
+        "path": "lineorder"
+      },
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                  {"term": {"lineorder.orderdate.d_year":1993}},
+                  {"range" : {"lineorder.lo_discount":{"gte":1, "lte":3}}},
+			{"range" : {"lineorder.lo_quantity":{"lt":25}}} 
+                ]
+               }
+			   },
+          "aggs": {
+            "extended_price": {
+              "sum": {"script" : "doc[\"lineorder.lo_extendedprice\"] * doc[\"lineorder.lo_discount\"]"}
+            }
+          }
+        }
+		}
+  }
+}, "size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/part/resultados/query11.txt

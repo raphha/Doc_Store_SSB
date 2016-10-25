@@ -1,0 +1,59 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_part/part2/_search?pretty' -d '
+{
+  "query": { "filtered": {"filter": {
+	"bool": {
+	      "must": [
+		{"bool":{"should":[{"match": {"p_mfgr":"MFGR#1"}},{"match": {"p_mfgr":"MFGR#2"}}]}}, 
+		{
+    "filtered": {
+      "filter": {
+        "nested": {
+          "inner_hits": {},
+          "path": "lineorder",
+          "query": {
+            "filtered": {
+              "filter": {
+                "bool": {
+                "must": [ 
+                  {"match": {"lineorder.customer.c_region":"AMERICA"}},
+		              {"match": {"lineorder.supplier.s_region":"AMERICA"}} 
+                ]
+         }}}}}}}}]}}}
+},
+  "aggs": {
+    "lineorder": {
+      "nested": {
+        "path": "lineorder"
+      },
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                  {"match": {"lineorder.customer.c_region":"AMERICA"}},
+		             {"match": {"lineorder.supplier.s_region":"AMERICA"}}  
+                 ]
+                }
+			   },
+          "aggs": {
+   		 "year": {
+     		 "terms": {
+      		  "field": "lineorder.orderdate.d_year",
+            "order" : { "_term" : "asc" }
+     		  },
+		    "aggs": {
+   		 "c_nation": {
+     		 "terms": {
+      		  "field": "lineorder.customer.c_nation",
+            "order" : { "_term" : "asc" }
+     		  }, 
+			"aggs": {
+    			"profit": {
+    			  "sum": {
+     		        "script" : "doc[\"lineorder.lo_revenue\"].value - doc[\"lineorder.lo_supplycost\"].value"
+		     }
+		     }
+			}}}}}}}}
+},"size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/part/resultados/query41.txt

@@ -1,0 +1,69 @@
+#!/bin/bash
+curl -XPOST 'localhost:9200/i_part/part2/_search?pretty' -d '
+{
+  "query": {"filtered": {"filter": {
+	"bool": {
+	      "must": [
+		{"bool":{"should":[{"match": {"p_mfgr":"MFGR#1"}},{"match": {"p_mfgr":"MFGR#2"}}]}}, 
+		{
+    "filtered": {
+      "filter": {
+        "nested": {
+          "inner_hits": {},
+          "path": "lineorder",
+          "query": {
+            "filtered": {
+              "filter": {
+                "bool": {
+                "must": [ 
+                  {"match": {"lineorder.customer.c_region":"AMERICA"}},
+		  {"match": {"lineorder.supplier.s_region":"AMERICA"}},
+		  {"range": {"lineorder.orderdate.d_year":{"gte":1997,"lte":1998}}} 
+                ]
+         }}}}}}}}]}}}
+},"aggs": {
+   		 	"group_by_category": {
+     		 	"terms": {
+      		 	 "field": "p_category",
+            "order" : { "_term" : "asc" }
+      		         },
+  "aggs": {
+    "lineorder": {
+      "nested": {
+        "path": "lineorder"
+      },
+      "aggs": {
+	  "only_loc": {
+          "filter": {
+                "bool": {
+                "must": [ 
+                  {"match": {"lineorder.customer.c_region":"AMERICA"}},
+		  {"match": {"lineorder.supplier.s_region":"AMERICA"}},
+		  {"range": {"lineorder.orderdate.d_year":{"gte":1997,"lte":1998}}}    
+                 ]
+                }
+			   },
+          "aggs": {
+   		 "year": {
+     		 "terms": {
+      		  "field": "lineorder.orderdate.d_year",
+            "order" : { "_term" : "asc" }
+     		  },
+		    "aggs": {
+   		 "s_nation": {
+     		 "terms": {
+      		  "field": "lineorder.supplier.s_nation",
+            "order" : { "_term" : "asc" }
+     		  }, 
+			"aggs": {
+    			"profit": {
+    			  "sum": {
+     		        "script" : "doc[\"lineorder.lo_revenue\"].value - doc[\"lineorder.lo_supplycost\"].value"
+		     }
+		     }
+			}}}}}}}}}}
+
+},"sort" : [
+      {"lineorder.orderdate.d_year" : {"order" : "asc"}},{"lineorder.supplier.s_nation" : {"order" : "desc"}}
+   ],"size":0
+}' -o /home/raphael/Documentos/benchmark/elasticsearch/part/resultados/query42.txt
