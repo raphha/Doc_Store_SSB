@@ -1,0 +1,13 @@
+sudo -u postgres psql -d tpc25 -c "select row_to_json(t) 
+from (select *, (select array_to_json(array_agg(row_to_json(s)))
+from (  select *,    (      select array_to_json(array_agg(row_to_json(i)))      
+from (        select *        from part        where lineorder.lo_partkey=p_partkey      ) i    ) as part,       
+(      select array_to_json(array_agg(row_to_json(i)))      
+from (        select *        from date        where lineorder.lo_orderdate=d_datekey      ) i    ) as orderdate,
+(      select array_to_json(array_agg(row_to_json(i)))      
+from (        select *        from date        where lineorder.lo_commitdate=d_datekey      ) i    ) as commitdate,
+(      select array_to_json(array_agg(row_to_json(i)))      
+from (        select *        from supplier        where lineorder.lo_suppkey=s_suppkey      ) i    ) as supplier  
+from lineorder   where c_custkey=lineorder.lo_custkey) s    ) as lineorder  
+from customer   
+where c_custkey between 1 and 2) t" >> /home...
