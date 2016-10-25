@@ -7,9 +7,9 @@ The original SSB can be found on https://github.com/electrum/ssb-dbgen.
 
 Thought its generator it's possible to generate numerous data sizes.
 
-After the genarator of data, it's possible to insert the SSB data to a relational database as POSTGRESQL and convert the data to JSON format using each table as a root of the JSON document.
+After the generation, it's possible to insert the SSB data to a relational database as POSTGRESQL and convert the data to JSON format using each table as a root of the JSON document.
 
-One sample of query can be seen on POSTGRESQL query.
+One sample of query to genarate the aggregate modeling based on the Customer table can be seen on POSTGRESQL query.
 
 Whe recomend the use of indexes to faster JSON genaration.
 
