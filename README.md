@@ -11,7 +11,7 @@ After the generation, it's possible to insert the SSB data to a relational datab
 
 One sample of query to genarate the aggregate modeling based on the Customer table can be seen on POSTGRESQL query.
 
-Whe recomend the use of indexes to faster JSON genaration.
+We recomend the use of indexes to faster JSON genaration.
 
 After the generation of the JSON it's possible to insert it on Document Store Database and the SSB queries can be executed and tested.
 
