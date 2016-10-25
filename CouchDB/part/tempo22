@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -X GET http://127.0.0.1:5984/db_part/_design/query22/_view/q22?group=true -o /home/raphael/Documentos/benchmark/partco/query/shell/resultados/query22.txt

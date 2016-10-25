@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -X GET http://127.0.0.1:5984/db_part/_design/query21/_view/q21?group=true -o /home/raphael/Documentos/benchmark/couchDB/partco/query/shell/resultados/query21a.txt
