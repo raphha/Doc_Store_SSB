@@ -1,0 +1,3 @@
+The .js file are the sintax of the Map-Reduce functions to create the views on CouchDB
+The "tempo" file are calls to the created views
+
