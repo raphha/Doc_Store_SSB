@@ -7,13 +7,13 @@ The original SSB can be found on https://github.com/electrum/ssb-dbgen.
 
 Thought its generator it's possible to generate numerous data sizes.
 
-After the generation, it's possible to insert the SSB data to a relational database as POSTGRESQL and convert the data to JSON format using each table as a root of the JSON document.
+After the generation, it's possible to insert the SSB data to a relational database as POSTGRESQL and convert the data to JSON format using each table as the base for the JSON document.
 
 One sample of query to generate the aggregate modeling based on the Customer table can be seen on POSTGRESQL query.
 
-We recomend the use of indexes to faster JSON genaration.
+We recomend the use of indexes to faster JSON generation.
 
-After the generation of the JSON it's possible to insert it on Document Store Database and the SSB queries can be executed and tested.
+After the generation of the JSON it's possible to insert it on Document Store Database Systems and the SSB queries can be executed and tested.
 
 On this project the query sintax of 5 DBMS is presented: MongoDB, ElasticSearch, OrientDB, CouchDB and MarkLogic.
 
