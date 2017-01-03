@@ -1,1 +1,0 @@
-connect remote:127.0.0.1/lineorder_ssbg root rasns1901;select sum(lo_revenue.asLong()), first(orderdate.d_year) as d_year, first(part.p_brand1) as p_brand1 from lineorder where part contains(p_brand1 between "MFGR#2221" and "MFGR#2228") and supplier contains(s_region="ASIA") group by orderdate.d_year, part.p_brand1
