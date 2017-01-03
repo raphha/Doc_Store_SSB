@@ -1,1 +1,0 @@
-gc;connect remote:127.0.0.1/part root rasns1901;select sum(eval("lo_extendedprice.asLong() * lo_discount.asLong()")) as revenue from lineorder where lo_discount between 4 and 6 and lo_quantity between 26 and 35 and orderdate contains (d_yearmonthnum=199401)
