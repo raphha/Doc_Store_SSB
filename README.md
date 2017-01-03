@@ -18,3 +18,5 @@ After the generation of the JSON it's possible to insert it on Document Store Da
 On this project the query sintax of 5 DBMS is presented: MongoDB, ElasticSearch, OrientDB, CouchDB and MarkLogic.
 
 Each DBMS folder has 5 sub-folder with queries on different aggregate modelings, for example the sub-folder customer inside the folder MongoDB represents the SSB queries on aggregate modeling based on Customer table.
+
+Because OrientDB has two way to organize its data its folder contains two sub-folders called linked documents and nested documents.
