@@ -1,0 +1,3 @@
+gc;connect remote:127.0.0.1/orderdate root rasns1901;select first(customer.c_nation) as c_nation, when.d_year as year, sum(eval("lo_revenue.asLong() - lo_supplycost.asLong()")) as revenue from lineorder where customer contains(c_region="AMERICA") and supplier contains(s_region="AMERICA") and part contains(p_mfgr="MFGR#1" or p_mfgr="MFGR#2") group by when.d_year, customer.c_nation 
+
+
