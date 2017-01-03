@@ -1,1 +1,0 @@
-gc;connect remote:127.0.0.1/customer root rasns1901;select sum(lo_revenue.asLong()), first(orderdate.d_year) as d_year, first(part.p_brand1) as p_brand1 from lineorder where supplier contains(s_region="AMERICA") and part contains(p_category ="MFGR#12") group by orderdate.d_year, part.p_brand1 
